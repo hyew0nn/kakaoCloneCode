@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: springboot-mysql
+    restart: always
+    env_file:
+      - .env
+    # "3306:3306" 로 설정할 시 이미 mysql workbench 가 3306 포트를 사용하고 있어서 포트를 사용할 수 없다는 오류 발생
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - springboot-network
+
+volumes:
+  mysql-data:
+
+networks:
+  springboot-network:
