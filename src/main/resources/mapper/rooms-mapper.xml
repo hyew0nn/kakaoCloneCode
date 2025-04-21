@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mycom.myapp.room.dao.RoomDao">
+
+    <insert id="createRoom" parameterType="com.mycom.myapp.room.dto.RoomDto" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into chatrooms(name, created_at, updated_at)
+        values(#{name}, now(), #{updatedAt});
+    </insert>
+
+    <insert id="insertRoomMember" parameterType="com.mycom.myapp.room.dto.RoomMemberDto">
+        insert into room_members(user_id, chatroom_id, role, joined_at)
+        values (#{userId}, #{roomId}, #{role}, now());
+    </insert>
+
+    <select id="listRoomsCount" parameterType="int">
+        SELECT COUNT(*) FROM room_members WHERE user_id = #{userId}
+    </select>
+
+    <select id="listRooms" resultType="map" parameterType="int">
+        SELECT
+            r.id AS room_id,
+            r.name AS room_name,
+            r.created_at AS room_created_at,
+            r.updated_at AS room_updated_at,
+            rm.id AS member_id,
+            rm.user_id AS member_user_id,
+            rm.role AS member_role,
+            rm.joined_at AS member_joined_at
+        FROM chatrooms r
+                 JOIN room_members rm ON r.id = rm.chatroom_id
+        WHERE r.id IN (
+            SELECT r2.id
+            FROM chatrooms r2
+                     JOIN room_members rm2 ON r2.id = rm2.chatroom_id
+            WHERE rm2.user_id = #{userId}
+        )
+    </select>
+
+        <resultMap id="RoomWithMembersResultMap" type="com.mycom.myapp.room.dto.RoomDto">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="createdAt" column="created_at"/>
+            <result property="updatedAt" column="updated_at"/>
+            <result property="memberCount" column="member_count"/>
+
+            <!-- nested result map -->
+            <collection property="members" ofType="com.mycom.myapp.room.dto.RoomMemberDto"
+                        select="getMembersByRoomId" column="id"/>
+        </resultMap>
+
+        <!-- 메인 쿼리: 유저가 포함된 detail room -->
+        <select id="detailRoom" parameterType="int" resultMap="RoomWithMembersResultMap">
+            SELECT r.*,
+                   (SELECT COUNT(*) FROM room_members rm WHERE rm.chatroom_id = r.id) AS member_count
+            FROM chatrooms r
+            WHERE r.id = #{roomId}
+        </select>
+
+        <!-- roomId로 멤버 리스트 가져오는 서브 쿼리 -->
+        <select id="getMembersByRoomId" parameterType="int" resultType="com.mycom.myapp.room.dto.RoomMemberDto">
+            SELECT * FROM room_members WHERE chatroom_id = #{roomId}
+        </select>
+
+</mapper>

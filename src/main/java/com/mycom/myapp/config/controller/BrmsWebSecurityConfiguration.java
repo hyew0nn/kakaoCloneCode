@@ -18,6 +18,9 @@ public class BrmsWebSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf((csrf) -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                )
                 .cors((c) -> c.disable())
                 .headers((headers) -> headers.disable());
         return http.build();
