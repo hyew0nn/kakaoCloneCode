@@ -1,122 +1,85 @@
 package com.mycom.myapp.room.service;
 
-import com.mycom.myapp.room.dao.RoomDao;
-import com.mycom.myapp.room.dto.RoomDto;
-import com.mycom.myapp.room.dto.RoomMemberDto;
-import com.mycom.myapp.room.dto.RoomParamDto;
-import com.mycom.myapp.room.dto.RoomResponseDto;
+import com.mycom.myapp.room.dto.*;
+import com.mycom.myapp.room.mapper.RoomMapper;
+import com.mycom.myapp.room.entity.Room;
+import com.mycom.myapp.room.entity.RoomMember;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class RoomServiceImpl implements RoomService {
-    private final RoomDao roomDao;
+    private final RoomMapper roomMapper;
 
-    RoomServiceImpl(RoomDao roomDao) {
-        this.roomDao = roomDao;
+    @Override
+    public RoomInsertResponse insertRoom(RoomInsertRequest roomInsertRequest) {
+        RoomInsertResponse roomInsertResponse = new RoomInsertResponse();
+
+        Room roomDto = new Room();
+        roomDto.setName(roomInsertRequest.getRoomName());
+
+        int roomRet = roomMapper.insertRoom(roomDto);
+
+        RoomMember roomMember = new RoomMember();
+        roomMember.setRoomId(roomDto.getId());
+        roomMember.setUserId(roomInsertRequest.getUserId());
+
+        int memberRet = roomMapper.insertRoomMember(roomMember);
+
+        if(roomRet > 0 && memberRet >0) {
+            roomInsertResponse.setMessage("create room success");
+            roomInsertResponse.setRoomId(roomDto.getId());
+            roomInsertResponse.setRoomName(roomDto.getName());
+        } else roomInsertResponse.setMessage("create room fail");
+
+        return roomInsertResponse;
     }
 
     @Override
-    public RoomResponseDto listRooms(int userId) {
-        RoomResponseDto roomResponseDto = new RoomResponseDto();
-        try {
-            List<Map<String, Object>> resultList = roomDao.listRooms(userId);
-            Map<Integer, RoomDto> roomMap = new LinkedHashMap<>();
+    public RoomsListResponse listRooms(int userId) {
+        RoomsListResponse roomsListResponse = new RoomsListResponse();
 
-            for (Map<String, Object> row : resultList) {
-                int roomId = (int) row.get("room_id");
+        List<Room> rooms = roomMapper.listRooms(userId);
 
-                RoomDto room = roomMap.get(roomId);
-                if (room == null) {
-                    room = new RoomDto();
-                    room.setId(roomId);
-                    room.setName((String) row.get("room_name"));
-                    room.setCreatedAt(((Timestamp) row.get("room_created_at")).toLocalDateTime());
+        List<RoomDto> roomList = new ArrayList<>();
 
-                    Timestamp updatedAt = (Timestamp) row.get("room_updated_at");
-                    room.setUpdatedAt(updatedAt != null ? updatedAt.toLocalDateTime() : null);
+        rooms.forEach(room -> {
+            RoomDto roomDto = RoomDto.builder()
+                    .roomId(room.getId())
+                    .roomName(room.getName())
+                    .build();
+            roomList.add(roomDto);
+        });
 
-                    room.setMembers(new ArrayList<>());
-                    roomMap.put(roomId, room);
-                }
+        roomsListResponse.setRooms(roomList);
+        roomsListResponse.setRoomsCount(roomList.size());
+        roomsListResponse.setMessage("call list rooms success");
 
-                RoomMemberDto member = new RoomMemberDto();
-                member.setId((int) row.get("member_id"));
-                member.setRoomId(roomId);
-                member.setUserId((int) row.get("member_user_id"));
-                member.setRole((String) row.get("member_role"));
-                member.setJoinedAt(((Timestamp) row.get("member_joined_at")).toLocalDateTime());
-
-                room.getMembers().add(member);
-            }
-
-            for (RoomDto room : roomMap.values()) {
-                room.setMemberCount(room.getMembers().size());
-            }
-
-            // 여기서 RoomResponseDto에 담기
-            roomResponseDto.setRooms(new ArrayList<>(roomMap.values()));
-            roomResponseDto.setCount(roomMap.size());
-
-//            int count = roomDao.listRoomsCount(userId);
-//            roomResponseDto.setCount(count);
-
-            roomResponseDto.setResponse("success");
-
-        }catch (Exception e) {
-            roomResponseDto.setResponse("fail");;
-            e.printStackTrace();
-        }
-        return roomResponseDto;
+        return roomsListResponse;
     }
 
     @Override
-    public RoomResponseDto detailRoom(RoomParamDto roomParam) {
-        RoomResponseDto roomResponseDto = new RoomResponseDto();
+    public RoomDetailResponse detailRoom(int roomId) {
+        RoomDetailResponse roomDetailResponse = new RoomDetailResponse();
 
-        try {
-            RoomDto room = roomDao.detailRoom(roomParam);
+        Room roomDto = roomMapper.detailRoom(roomId);
+        roomDetailResponse.setRoomId(roomDto.getId());
+        roomDetailResponse.setRoomName(roomDto.getName());
 
-            roomResponseDto.setRoom(room);
-            roomResponseDto.setResponse("success");
+        List<RoomMemberDto> roomMember = roomMapper.detailRoomMembers(roomId);;
 
-        }catch (Exception e) {
-            roomResponseDto.setResponse("fail");
-            e.printStackTrace();
-        }
-        return roomResponseDto;
+        roomDetailResponse.setMembers(roomMember);
+        roomDetailResponse.setMemberCount(roomMember.size());
+        roomDetailResponse.setMessage("call detail room success");
+
+        return roomDetailResponse;
     }
 
-    @Override
-    public RoomResponseDto createRoom(RoomParamDto roomParam) {
-        RoomResponseDto roomResponseDto = new RoomResponseDto();
-        try {
-            RoomDto roomDto = new RoomDto();
-            roomDto.setName(roomParam.getName());
-
-            int roomRet = roomDao.createRoom(roomDto);
-
-            RoomMemberDto roomMemberDto = new RoomMemberDto();
-            roomMemberDto.setRoomId(roomDto.getId());
-            roomMemberDto.setUserId(roomParam.getUserId());
-            roomMemberDto.setRole(roomParam.getUserRole());
-
-            int memberRet = roomDao.insertRoomMember(roomMemberDto);
-
-            if(roomRet > 0 && memberRet >0) {
-                roomResponseDto.setResponse("success");
-            } else roomResponseDto.setResponse("fail");
-
-        } catch (Exception e) {
-            roomResponseDto.setResponse("fail");
-            e.printStackTrace();
-        }
-        return roomResponseDto;
-    }
 
 }

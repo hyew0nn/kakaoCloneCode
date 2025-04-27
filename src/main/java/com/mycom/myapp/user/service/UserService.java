@@ -1,8 +1,8 @@
 package com.mycom.myapp.user.service;
 
 import com.mycom.myapp.user.dto.UserDto;
-import com.mycom.myapp.user.dto.UserResponseDto;
+import com.mycom.myapp.user.dto.UserSignUpResponse;
 
 public interface UserService {
-    UserResponseDto insertUser(UserDto userDto);
+    UserSignUpResponse insertUser(UserDto userDto);
 }

@@ -8,7 +8,6 @@
     </settings>
     <mappers>
         <mapper resource="mapper/users-mapper.xml"/>
-        <mapper resource="mapper/login-mapper.xml"/>
         <mapper resource="mapper/rooms-mapper.xml"/>
     </mappers>
 </configuration>

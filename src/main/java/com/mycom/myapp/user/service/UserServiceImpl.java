@@ -1,36 +1,49 @@
 package com.mycom.myapp.user.service;
 
-import com.mycom.myapp.user.dao.UserDao;
 import com.mycom.myapp.user.dto.UserDto;
-import com.mycom.myapp.user.dto.UserResponseDto;
+import com.mycom.myapp.user.mapper.UserMapper;
+import com.mycom.myapp.user.entity.User;
+import com.mycom.myapp.user.dto.UserSignUpResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserDao userDao;
+    private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserDao userDao, BCryptPasswordEncoder passwordEncoder) {
-        this.userDao = userDao;
+    public UserServiceImpl(UserMapper userMapper, BCryptPasswordEncoder passwordEncoder) {
+        this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public UserResponseDto insertUser(UserDto userDto) {
-        UserResponseDto userResponseDto = new UserResponseDto();
-        try {
-            // 👉 비밀번호 암호화
-            String encodedPassword = passwordEncoder.encode(userDto.getPassword());
-            userDto.setPassword(encodedPassword); // 암호화된 비밀번호로 덮어쓰기
+    @Transactional
+    public UserSignUpResponse insertUser(UserDto userDto) {
+        UserSignUpResponse userSignUpResponse = new UserSignUpResponse();
 
-            int ret = userDao.insertUser(userDto);
-            if (ret > 0) userResponseDto.setResponse("success");
-            else userResponseDto.setResponse("fail");
-        }catch (Exception e){
-            userResponseDto.setResponse("fail");
-            e.printStackTrace();
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        userDto.setPassword(encodedPassword);
+
+        User user = convertToEntity(userDto);
+        int ret = userMapper.insertUser(user);
+
+        if (ret > 0) {
+            userSignUpResponse.setMessage("success");
+            userSignUpResponse.setUserId(user.getId());
         }
-        return userResponseDto;
+        else userSignUpResponse.setMessage("fail");
+
+        return userSignUpResponse;
+    }
+
+    private User convertToEntity(UserDto userDto) {
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setName(userDto.getName());
+        user.setPassword(userDto.getPassword());
+
+        return user;
     }
 }
