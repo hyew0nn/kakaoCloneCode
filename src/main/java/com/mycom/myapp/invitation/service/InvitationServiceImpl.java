@@ -1,15 +1,15 @@
-package com.mycom.myapp.invitaiton.service;
+package com.mycom.myapp.invitation.service;
 
 import com.mycom.myapp.config.exception.InvitationExceptions;
 import com.mycom.myapp.config.exception.RoomExceptions;
 import com.mycom.myapp.config.exception.UserExceptions;
-import com.mycom.myapp.invitaiton.dto.InvitationAcceptResponse;
-import com.mycom.myapp.invitaiton.dto.InvitationDto;
-import com.mycom.myapp.invitaiton.dto.InvitationListResponse;
-import com.mycom.myapp.invitaiton.dto.InvitationRejectResponse;
-import com.mycom.myapp.invitaiton.entity.Invitation;
-import com.mycom.myapp.invitaiton.entity.InvitationType;
-import com.mycom.myapp.invitaiton.mapper.InvitationMapper;
+import com.mycom.myapp.invitation.dto.InvitationAcceptResponse;
+import com.mycom.myapp.invitation.dto.InvitationDto;
+import com.mycom.myapp.invitation.dto.InvitationListResponse;
+import com.mycom.myapp.invitation.dto.InvitationRejectResponse;
+import com.mycom.myapp.invitation.entity.Invitation;
+import com.mycom.myapp.invitation.entity.InvitationType;
+import com.mycom.myapp.invitation.mapper.InvitationMapper;
 import com.mycom.myapp.room.entity.Room;
 import com.mycom.myapp.room.entity.RoomMember;
 import com.mycom.myapp.room.mapper.RoomMapper;
@@ -60,7 +60,6 @@ public class InvitationServiceImpl implements InvitationService{
             throw new RoomExceptions.RoomNotFoundException(invitation.getChatroomId());
         }
 
-        System.out.println(invitation);
         if (invitation.getInvitationType() != InvitationType.pending) {
             throw new InvitationExceptions.InvitationAlreadyProcessedException(invitationId);
         }
@@ -94,6 +93,11 @@ public class InvitationServiceImpl implements InvitationService{
             throw new InvitationExceptions.InvitationNotFoundException(invitationId);
         }
 
+        Room room = roomMapper.findRoomById(invitation.getChatroomId());
+        if (room == null) {
+            throw new RoomExceptions.RoomNotFoundException(invitation.getChatroomId());
+        }
+
         if (invitation.getInvitationType() != InvitationType.pending) {
             throw new InvitationExceptions.InvitationAlreadyProcessedException(invitationId);
         }
@@ -102,8 +106,6 @@ public class InvitationServiceImpl implements InvitationService{
         invitation.setInvitationType(InvitationType.rejected);
         invitation.setRespondedAt(LocalDateTime.now());
         invitationMapper.updateInvitation(invitation);
-
-        Room room = roomMapper.findRoomById(invitation.getChatroomId());
 
         return InvitationRejectResponse.builder()
                 .message("초대를 거절했습니다.")

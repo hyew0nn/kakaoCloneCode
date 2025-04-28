@@ -1,7 +1,6 @@
-package com.mycom.myapp.invitaiton.entity;
+package com.mycom.myapp.invitation.entity;
 
 import lombok.*;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDateTime;
 

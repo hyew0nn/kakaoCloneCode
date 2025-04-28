@@ -1,8 +1,8 @@
-package com.mycom.myapp.invitaiton.service;
+package com.mycom.myapp.invitation.service;
 
-import com.mycom.myapp.invitaiton.dto.InvitationAcceptResponse;
-import com.mycom.myapp.invitaiton.dto.InvitationListResponse;
-import com.mycom.myapp.invitaiton.dto.InvitationRejectResponse;
+import com.mycom.myapp.invitation.dto.InvitationAcceptResponse;
+import com.mycom.myapp.invitation.dto.InvitationListResponse;
+import com.mycom.myapp.invitation.dto.InvitationRejectResponse;
 
 public interface InvitationService {
     InvitationListResponse getInvitationsByUserId(int userId);

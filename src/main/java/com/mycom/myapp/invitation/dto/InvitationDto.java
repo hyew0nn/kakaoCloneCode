@@ -1,4 +1,4 @@
-package com.mycom.myapp.invitaiton.dto;
+package com.mycom.myapp.invitation.dto;
 
 import lombok.Builder;
 

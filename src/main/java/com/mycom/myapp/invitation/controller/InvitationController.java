@@ -1,9 +1,9 @@
-package com.mycom.myapp.invitaiton.controller;
+package com.mycom.myapp.invitation.controller;
 
-import com.mycom.myapp.invitaiton.dto.InvitationAcceptResponse;
-import com.mycom.myapp.invitaiton.dto.InvitationListResponse;
-import com.mycom.myapp.invitaiton.dto.InvitationRejectResponse;
-import com.mycom.myapp.invitaiton.service.InvitationService;
+import com.mycom.myapp.invitation.dto.InvitationAcceptResponse;
+import com.mycom.myapp.invitation.dto.InvitationListResponse;
+import com.mycom.myapp.invitation.dto.InvitationRejectResponse;
+import com.mycom.myapp.invitation.service.InvitationService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

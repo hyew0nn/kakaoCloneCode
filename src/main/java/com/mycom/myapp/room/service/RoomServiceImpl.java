@@ -3,9 +3,9 @@ package com.mycom.myapp.room.service;
 import com.mycom.myapp.config.exception.InvitationExceptions;
 import com.mycom.myapp.config.exception.RoomExceptions;
 import com.mycom.myapp.config.exception.UserExceptions;
-import com.mycom.myapp.invitaiton.entity.Invitation;
-import com.mycom.myapp.invitaiton.entity.InvitationType;
-import com.mycom.myapp.invitaiton.mapper.InvitationMapper;
+import com.mycom.myapp.invitation.entity.Invitation;
+import com.mycom.myapp.invitation.entity.InvitationType;
+import com.mycom.myapp.invitation.mapper.InvitationMapper;
 import com.mycom.myapp.room.dto.*;
 import com.mycom.myapp.room.mapper.RoomMapper;
 import com.mycom.myapp.room.entity.Room;
@@ -142,7 +142,7 @@ public class RoomServiceImpl implements RoomService {
 
         roomInviteResponse.setMessage("insert invitation success");
         roomInviteResponse.setRoomId(invitation.getChatroomId());
-        roomInviteResponse.setInviteeName(inviter.getName());
+        roomInviteResponse.setInviteeName(invitee.getName());
 
         return roomInviteResponse;
     }
