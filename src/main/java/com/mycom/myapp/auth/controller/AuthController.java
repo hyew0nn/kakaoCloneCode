@@ -23,7 +23,7 @@ public class AuthController {
         UserDto userDto = userLoginResponse.getUserDto();
 
         if(userDto != null){
-            session.setAttribute("userDto", userDto);
+            session.setAttribute("userId", userDto.getId());
         }
         return ResponseEntity.ok(userLoginResponse);
     }

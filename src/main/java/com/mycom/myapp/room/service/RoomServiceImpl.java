@@ -7,6 +7,7 @@ import com.mycom.myapp.invitation.entity.Invitation;
 import com.mycom.myapp.invitation.entity.InvitationType;
 import com.mycom.myapp.invitation.mapper.InvitationMapper;
 import com.mycom.myapp.room.dto.*;
+import com.mycom.myapp.room.entity.MemberType;
 import com.mycom.myapp.room.mapper.RoomMapper;
 import com.mycom.myapp.room.entity.Room;
 import com.mycom.myapp.room.entity.RoomMember;
@@ -44,10 +45,11 @@ public class RoomServiceImpl implements RoomService {
             throw new RoomExceptions.RoomCreationException();
         }
 
-        RoomMember roomMember = new RoomMember();
-        roomMember.setRoomId(roomDto.getId());
-        roomMember.setUserId(roomInsertRequest.getUserId());
-        roomMember.setRole("방장");
+        RoomMember roomMember = RoomMember.builder()
+                .roomId(roomDto.getId())
+                .userId(roomInsertRequest.getUserId())
+                .role(MemberType.admin)
+                .build();
 
         int insertMemberResult = roomMapper.insertRoomMember(roomMember);
         if (insertMemberResult <= 0) {

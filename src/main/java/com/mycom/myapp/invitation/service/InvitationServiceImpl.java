@@ -10,6 +10,7 @@ import com.mycom.myapp.invitation.dto.InvitationRejectResponse;
 import com.mycom.myapp.invitation.entity.Invitation;
 import com.mycom.myapp.invitation.entity.InvitationType;
 import com.mycom.myapp.invitation.mapper.InvitationMapper;
+import com.mycom.myapp.room.entity.MemberType;
 import com.mycom.myapp.room.entity.Room;
 import com.mycom.myapp.room.entity.RoomMember;
 import com.mycom.myapp.room.mapper.RoomMapper;
@@ -68,10 +69,11 @@ public class InvitationServiceImpl implements InvitationService{
         invitation.setRespondedAt(LocalDateTime.now());
         invitationMapper.updateInvitation(invitation);
 
-        RoomMember roomMember = new RoomMember();
-        roomMember.setRoomId(invitation.getChatroomId());
-        roomMember.setUserId(userId);
-        roomMember.setRole("멤버");
+        RoomMember roomMember = RoomMember.builder()
+                .roomId(invitation.getChatroomId())
+                .userId(userId)
+                .role(MemberType.member)
+                .build();
 
         int result = roomMapper.insertRoomMember(roomMember);
 

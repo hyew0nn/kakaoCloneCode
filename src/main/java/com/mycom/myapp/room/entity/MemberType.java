@@ -1,4 +1,6 @@
-package com.mycom.myapp.user.entity;
+package com.mycom.myapp.room.entity;
 
-public class UserType {
+public enum MemberType {
+    admin,
+    member
 }

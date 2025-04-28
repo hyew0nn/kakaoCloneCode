@@ -2,6 +2,7 @@ package com.mycom.myapp.room.controller;
 
 import com.mycom.myapp.room.dto.*;
 import com.mycom.myapp.room.service.RoomService;
+import com.mycom.myapp.user.dto.UserDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,8 @@ public class RoomController {
 
     @PostMapping
     public ResponseEntity<RoomInsertResponse> createRoom(RoomInsertRequest roomInsertRequest, HttpSession session) {
-
-//        int userId = ((UserDto)session.getAttribute("userDto")).getId();
-//        roomInsertRequest.setUserId(userId);
+        int userId = (int) session.getAttribute("userId");
+        roomInsertRequest.setUserId(userId);
 
         RoomInsertResponse roomInsertResponse = roomService.createRoom(roomInsertRequest);
 
@@ -25,9 +25,8 @@ public class RoomController {
     }
 
     @GetMapping
-    public ResponseEntity<RoomListResponse> getRoomsByUserId(@RequestParam int userId, HttpSession session) {
-
-//        int userId = ((UserDto)session.getAttribute("userDto")).getId();
+    public ResponseEntity<RoomListResponse> getRoomsByUserId(HttpSession session) {
+        int userId = (int) session.getAttribute("userId");
 
         RoomListResponse roomListResponse = roomService.getRoomsByUserId(userId);
         return ResponseEntity.ok(roomListResponse);
@@ -41,9 +40,8 @@ public class RoomController {
 
     @PostMapping("/{roomId}/invite")
     public ResponseEntity<RoomInviteResponse> inviteToRoom(@PathVariable("roomId") int roomId, RoomInviteRequest roomInviteRequest, HttpSession session) {
-
-//        int userId = ((UserDto)session.getAttribute("userDto")).getId();
-//        roomInviteRequest.setUserId(userId);
+        int userId = (int) session.getAttribute("userId");
+        roomInviteRequest.setInviterId(userId);
         RoomInviteResponse roomInviteResponse = roomService.inviteToRoom(roomInviteRequest, roomId);
         return ResponseEntity.ok(roomInviteResponse);
     }
