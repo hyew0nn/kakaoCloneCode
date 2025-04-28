@@ -1,0 +1,17 @@
+package com.mycom.myapp.invitaiton.mapper;
+
+import com.mycom.myapp.invitaiton.dto.InvitationDto;
+import com.mycom.myapp.invitaiton.entity.Invitation;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface InvitationMapper {
+    int insertInvitation(Invitation invitation);
+
+    Invitation findInvitationById(int invitationId);
+    void updateInvitation(Invitation invitation);
+
+    List<InvitationDto> findInvitationsByUserId(int userId);
+}

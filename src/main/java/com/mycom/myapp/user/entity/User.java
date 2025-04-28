@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User {
     private int id;
     private String email;
