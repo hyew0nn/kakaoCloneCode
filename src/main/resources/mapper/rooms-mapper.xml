@@ -12,10 +12,10 @@
 
     <insert id="insertRoomMember" parameterType="com.mycom.myapp.room.entity.RoomMember">
         insert into room_members(user_id, chatroom_id, role, joined_at)
-        values (#{userId}, #{roomId}, "방장", now());
+        values (#{userId}, #{roomId}, #{role}, now());
     </insert>
 
-    <select id="listRooms" parameterType="int" resultType="com.mycom.myapp.room.entity.Room">
+    <select id="findRoomsByUserId" parameterType="int" resultType="com.mycom.myapp.room.entity.Room">
         SELECT
             r.id, r.name , r.created_at, r.updated_at
         FROM chatrooms r
@@ -23,7 +23,7 @@
         WHERE rm.user_id = #{userId};
     </select>
 
-    <select id="detailRoomMembers" parameterType="int" resultType="com.mycom.myapp.room.dto.RoomMemberDto">
+    <select id="findRoomMembersByRoomId" parameterType="int" resultType="com.mycom.myapp.room.dto.RoomMemberDto">
         SELECT
             rm.role as memberRole, u.id as userId, u.name as userName
         FROM room_members rm
@@ -31,7 +31,7 @@
         WHERE rm.chatroom_id = #{roomId};
     </select>
 
-    <select id="detailRoom" parameterType="int" resultType="com.mycom.myapp.room.entity.Room">
+    <select id="findRoomById" parameterType="int" resultType="com.mycom.myapp.room.entity.Room">
         SELECT id, name , created_at, updated_at
         FROM chatrooms
         WHERE id = #{roomId};

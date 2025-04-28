@@ -9,5 +9,6 @@
     <mappers>
         <mapper resource="mapper/users-mapper.xml"/>
         <mapper resource="mapper/rooms-mapper.xml"/>
+        <mapper resource="mapper/invitations-mapper.xml"/>
     </mappers>
 </configuration>

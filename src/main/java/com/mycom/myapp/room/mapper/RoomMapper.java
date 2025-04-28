@@ -15,8 +15,8 @@ public interface RoomMapper {
     int insertRoom(Room room);
     int insertRoomMember(RoomMember roomMember);
 
-    List<Room> listRooms(int userId);
+    List<Room> findRoomsByUserId(int userId);
 
-    Room detailRoom(int roomId);
-    List<RoomMemberDto> detailRoomMembers(int roomId);
+    Room findRoomById(int roomId);
+    List<RoomMemberDto> findRoomMembersByRoomId(int roomId);
 }

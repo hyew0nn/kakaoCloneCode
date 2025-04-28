@@ -1,49 +1,43 @@
 package com.mycom.myapp.user.service;
 
+import com.mycom.myapp.config.exception.BusinessException;
+import com.mycom.myapp.config.exception.UserExceptions;
 import com.mycom.myapp.user.dto.UserDto;
 import com.mycom.myapp.user.mapper.UserMapper;
 import com.mycom.myapp.user.entity.User;
 import com.mycom.myapp.user.dto.UserSignUpResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserMapper userMapper, BCryptPasswordEncoder passwordEncoder) {
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
-
     @Override
-    @Transactional
     public UserSignUpResponse insertUser(UserDto userDto) {
         UserSignUpResponse userSignUpResponse = new UserSignUpResponse();
 
-        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
-        userDto.setPassword(encodedPassword);
+        User user = User.builder()
+                .email(userDto.getEmail())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .name(userDto.getName())
+                .build();
 
-        User user = convertToEntity(userDto);
-        int ret = userMapper.insertUser(user);
+        int insertResult = userMapper.insertUser(user);
 
-        if (ret > 0) {
-            userSignUpResponse.setMessage("success");
-            userSignUpResponse.setUserId(user.getId());
+        if (insertResult <= 0) {
+            throw new UserExceptions.UserCreationException();
         }
-        else userSignUpResponse.setMessage("fail");
+
+        userSignUpResponse.setMessage("insert user success");
+        userSignUpResponse.setUserId(user.getId());
 
         return userSignUpResponse;
     }
 
-    private User convertToEntity(UserDto userDto) {
-        User user = new User();
-        user.setEmail(userDto.getEmail());
-        user.setName(userDto.getName());
-        user.setPassword(userDto.getPassword());
-
-        return user;
-    }
 }

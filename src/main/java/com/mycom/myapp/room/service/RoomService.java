@@ -3,7 +3,8 @@ package com.mycom.myapp.room.service;
 import com.mycom.myapp.room.dto.*;
 
 public interface RoomService {
-    RoomInsertResponse insertRoom(RoomInsertRequest roomInsertRequest);
-    RoomsListResponse listRooms(int userId);
-    RoomDetailResponse detailRoom(int roomId);
+    RoomInsertResponse createRoom(RoomInsertRequest roomInsertRequest);
+    RoomListResponse getRoomsByUserId(int userId);
+    RoomDetailResponse getRoomDetails(int roomId);
+    RoomInviteResponse inviteToRoom(RoomInviteRequest roomInviteRequest, int roomId);
 }

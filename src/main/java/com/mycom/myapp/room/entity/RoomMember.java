@@ -6,12 +6,13 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomMember {
     private int id;
     private int roomId;
     private int userId;
-    private String role;
+    private MemberType role;
     LocalDateTime joinedAt;
 }
