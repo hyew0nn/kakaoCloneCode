@@ -1,4 +1,4 @@
-package com.mycom.myapp.invitaiton.entity;
+package com.mycom.myapp.invitation.entity;
 
 public enum InvitationType {
     pending,

@@ -1,6 +1,5 @@
-package com.mycom.myapp.invitaiton.dto;
+package com.mycom.myapp.invitation.dto;
 
-import com.mycom.myapp.invitaiton.mapper.InvitationMapper;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

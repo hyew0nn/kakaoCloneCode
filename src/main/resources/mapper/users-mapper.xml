@@ -12,7 +12,7 @@
             values(#{email}, #{password}, #{name}, now(), #{updatedAt});
     </insert>
 
-    <select id="login" parameterType="int" resultType="com.mycom.myapp.user.entity.User">
+    <select id="login" parameterType="string" resultType="com.mycom.myapp.user.entity.User">
         select id, email, password, name, created_at, updated_at
         from users
         where email = #{email};

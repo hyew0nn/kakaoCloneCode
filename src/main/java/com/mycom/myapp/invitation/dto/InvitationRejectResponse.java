@@ -1,4 +1,4 @@
-package com.mycom.myapp.invitaiton.dto;
+package com.mycom.myapp.invitation.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import lombok.Builder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InvitationAcceptResponse {
+public class InvitationRejectResponse {
     private String message;
     private int roomId;
     private String roomName;

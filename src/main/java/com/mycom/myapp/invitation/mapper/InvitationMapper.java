@@ -1,7 +1,7 @@
-package com.mycom.myapp.invitaiton.mapper;
+package com.mycom.myapp.invitation.mapper;
 
-import com.mycom.myapp.invitaiton.dto.InvitationDto;
-import com.mycom.myapp.invitaiton.entity.Invitation;
+import com.mycom.myapp.invitation.dto.InvitationDto;
+import com.mycom.myapp.invitation.entity.Invitation;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -2,15 +2,15 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mycom.myapp.invitaiton.mapper.InvitationMapper">
+<mapper namespace="com.mycom.myapp.invitation.mapper.InvitationMapper">
 
-    <insert id="insertInvitation" parameterType="com.mycom.myapp.invitaiton.entity.Invitation" useGeneratedKeys="true"
+    <insert id="insertInvitation" parameterType="com.mycom.myapp.invitation.entity.Invitation" useGeneratedKeys="true"
             keyProperty="id">
         insert into invitations(chatroom_id,inviter_id, invitee_id, status, invited_at, responded_at)
         values(#{chatroomId}, #{inviterId}, #{inviteeId}, #{invitationType}, now(), #{respondedAt});
     </insert>
 
-    <select id="findInvitationsByUserId" parameterType="int" resultType="com.mycom.myapp.invitaiton.dto.InvitationDto">
+    <select id="findInvitationsByUserId" parameterType="int" resultType="com.mycom.myapp.invitation.dto.InvitationDto">
         SELECT r.name AS roomName,
                u.name AS inviterName,
                i.id AS inviteId,
@@ -22,13 +22,13 @@
         WHERE i.invitee_id = #{userId};
     </select>
 
-    <select id="findInvitationById" parameterType="int" resultType="com.mycom.myapp.invitaiton.entity.Invitation">
+    <select id="findInvitationById" parameterType="int" resultType="com.mycom.myapp.invitation.entity.Invitation">
         select id, chatroom_id,inviter_id, invitee_id, status AS invitationType, invited_at, responded_at
         from invitations
         where id = #{invitationId}
     </select>
 
-    <update id="updateInvitation" parameterType="com.mycom.myapp.invitaiton.entity.Invitation">
+    <update id="updateInvitation" parameterType="com.mycom.myapp.invitation.entity.Invitation">
         UPDATE invitations
         SET status = #{invitationType},
             responded_at = #{respondedAt}
